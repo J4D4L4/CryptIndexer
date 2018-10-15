@@ -1,5 +1,6 @@
 from coinmarketcap import Market
 import matplotlib.pyplot as plt
+import numpy as np
 import json
 import copy
 class coin:
@@ -166,6 +167,19 @@ def getListOfAmtCoins(coins):
     for coin in coins:
         amtCoins.append(coin.amt)
     return amtCoins
+def printBarChart(coins):
+    n_groups = len(coins)
+    fig, ax = plt.subplots()
+    index = np.arange(n_groups)
+    bar_width = 0.35
+
+
+    rects1 = ax.bar(index,getListofProzent(coins), bar_width, label='Symbol')
+    ax.set_xticklabels(getListofSymbols(coins))
+
+    fig.tight_layout()
+    plt.show()
+
 #myPortfolio = portfolio(50, 5, 10000)
 #symbols=listSymbols(myPortfolio)
 #symbols=['BTC']
@@ -185,6 +199,7 @@ label = getListofSymbols(myPortfolio.coins)
 prozent=getListofProzent(myPortfolio.coins)
 values=getListOfValues(myPortfolio.coins)
 amtCoins=getListOfAmtCoins(myPortfolio.coins)
+printBarChart(myPortfolio.coins)
 
 for coin in myPortfolio.coins:
     print(str(coin.symbol)+":"+ str(coin.amt)+" Worth: "+str(coin.worth) +"$ Portfolio Slize: "+ str(coin.prozent))
