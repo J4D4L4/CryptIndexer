@@ -1,3 +1,5 @@
 coinmarketcap
 matplotlib
 numpy
+abc
+configparser

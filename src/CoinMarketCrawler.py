@@ -175,6 +175,7 @@ def printBarChart(coins):
 
 
     rects1 = ax.bar(index,getListofProzent(coins), bar_width, label='Symbol')
+    ax.set_xticks(index + bar_width / 2)
     ax.set_xticklabels(getListofSymbols(coins))
 
     fig.tight_layout()
