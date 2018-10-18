@@ -70,7 +70,7 @@ class Config():
         print("PubKey is: "+ self.readConfig().get("Binance","pubKey"))
         return config
 
-config = Config()
+#config = Config()
 #config.createConfig()
 #inConfig = config.readConfig()
-iniConfig = config.createNewConfig()
+#iniConfig = config.createNewConfig()

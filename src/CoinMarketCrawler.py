@@ -1,6 +1,8 @@
 from coinmarketcap import Market
 import matplotlib.pyplot as plt
 import numpy as np
+from src.BrokerCrawler import Config
+
 import json
 import copy
 class coin:
@@ -97,8 +99,27 @@ def removeSymbol(market, symbols):
         if symbol['symbol']  in symbols:
             nMarket['data'].pop(key)
     return nMarket
+def consoleIntefaceMainMenu():
 
-def consoleInterface():
+    choice = input('Press 1 to create Your Config(do this the first time in the Programm. Press 2 to create Portfolio)')
+    if (choice =="1"):
+        config = Config()
+        iniConfig = config.createNewConfig()
+    elif(choice=='2'):
+        myPortfolio = consoleInterfaceCreatePortfolio()
+        label = getListofSymbols(myPortfolio.coins)
+        prozent = getListofProzent(myPortfolio.coins)
+        values = getListOfValues(myPortfolio.coins)
+        amtCoins = getListOfAmtCoins(myPortfolio.coins)
+        printBarChart(myPortfolio.coins)
+
+        for coin in myPortfolio.coins:
+            print(str(coin.symbol) + ":" + str(coin.amt) + " Worth: " + str(coin.worth) + "$ Portfolio Slize: " + str(
+                coin.prozent))
+    else :
+        print("wrong input")
+
+def consoleInterfaceCreatePortfolio():
     print('Create your Crypto Index')
     print('-------------------------')
     try:
@@ -195,14 +216,6 @@ def printBarChart(coins):
 
 #for coin in myPortfolio.coins:
 #    print (coin)
-myPortfolio = consoleInterface()
-label = getListofSymbols(myPortfolio.coins)
-prozent=getListofProzent(myPortfolio.coins)
-values=getListOfValues(myPortfolio.coins)
-amtCoins=getListOfAmtCoins(myPortfolio.coins)
-printBarChart(myPortfolio.coins)
-
-for coin in myPortfolio.coins:
-    print(str(coin.symbol)+":"+ str(coin.amt)+" Worth: "+str(coin.worth) +"$ Portfolio Slize: "+ str(coin.prozent))
+consoleIntefaceMainMenu()
 
 
