@@ -4,3 +4,7 @@ numpy
 abc
 configparser
 os
+time
+hmac
+hashlib
+python-binance

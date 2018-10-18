@@ -1,7 +1,13 @@
+import hashlib
 from abc import ABC, abstractmethod
 import configparser
 import os
 
+import binance as binance
+import requests
+import time
+import hmac
+from binance.client import Client
 #abstract broker
 class Broker(ABC):
 
@@ -70,7 +76,53 @@ class Config():
         print("PubKey is: "+ self.readConfig().get("Binance","pubKey"))
         return config
 
+class restCall():
+    def __init__(self):
+
+        super().__init__()
+
+    kwargs=list()
+    config=Config()
+    burl='https://api.binance.com/'
+
+    def getUserPorfolio(self):
+
+        query='api/v3/account'
+        timeQuery="/api/v1/time"
+        url=self.burl+query
+        timeUrl=self.burl+timeQuery
+
+        parameter="?"
+        serverTime = requests.get(timeUrl)
+
+        keyPara='?X-MBX-APIKEY='+  self.config.readConfig().get("Binance","pubKey")
+        timePara= '?timestamp='+ str(time.time())[:14].replace('.','')
+        hearder={'X-MBX-APIKEY' : self.config.readConfig().get("Binance","pubKey")
+
+        }
+        self.kwargs['data']["timestamp"] = timePara
+        secret=self._generate_signature(self.kwargs['data'])
+        requestUrl= url+timePara
+        r = requests.get(requestUrl,   auth=secret)
+        print(r.json())
+    def _generate_signature(self, data):
+
+        ordered_data = self._order_params(data)
+        query_string = '&'.join(["{}={}".format(d[0], d[1]) for d in ordered_data])
+        m = hmac.new(self.API_SECRET.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256)
+        return m.hexdigest()
+class binanceAPI:
+    def __init__(self):
+
+        super().__init__()
+    config=Config()
+    client = Client(config.readConfig().get("Binance","pubKey"), config.readConfig().get("Binance","prvkey"))
+    info = client.get_account()
+    print(info)
+
 #config = Config()
 #config.createConfig()
 #inConfig = config.readConfig()
 #iniConfig = config.createNewConfig()
+#restCall().getUserPorfolio()
+binanceAPI()
