@@ -2,29 +2,31 @@ from coinmarketcap import Market
 import matplotlib.pyplot as plt
 import numpy as np
 from src.BrokerCrawler import Config
+from src.Coin import coin
+from src.Portfolio import portfolio
 
 import json
 import copy
-class coin:
-    def __init__(self, prozent, symbol, price):
-        self.prozent = prozent
-        self.symbol = symbol
-        self.price = price
-        self.amt = 0
-        self.worth =0
+#class coin:
+#    def __init__(self, prozent, symbol, price):
+#        self.prozent = prozent
+#        self.symbol = symbol
+#        self.price = price
+#       self.amt = 0
+#        self.worth =0
 
 
-class portfolio:
+#class portfolio:
     #fuellungsGrad=0
     #coins = list()
     #market = dict()
 
-    def __init__(self, marketSize, maxSlize, investmentSize):
-        self.market=getMarket(marketSize)
-        self.fuellungsGrad = 0
-        self.coins = list()
-        self.maxSlize = maxSlize
-        self.investmentSize = investmentSize
+#    def __init__(self, marketSize, maxSlize, investmentSize):
+#        self.market=getMarket(marketSize)
+#        self.fuellungsGrad = 0
+#        self.coins = list()
+#        self.maxSlize = maxSlize
+#        self.investmentSize = investmentSize
 
 def getMarket(nrOfPositions):
 

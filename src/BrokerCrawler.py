@@ -8,6 +8,8 @@ import requests
 import time
 import hmac
 from binance.client import Client
+#from src.CoinMarketCrawler import portfolio
+#from src.Coin import coin
 #abstract broker
 class Broker(ABC):
 
@@ -115,14 +117,19 @@ class binanceAPI:
     def __init__(self):
 
         super().__init__()
-    config=Config()
-    client = Client(config.readConfig().get("Binance","pubKey"), config.readConfig().get("Binance","prvkey"))
-    info = client.get_account()
-    print(info)
+
+    def getUserPortfolio(self):
+
+        config=Config()
+        portfolio = list()
+        client = Client(config.readConfig().get("Binance","pubKey"), config.readConfig().get("Binance","prvkey"))
+        info = client.get_account()
+
+        print(info)
 
 #config = Config()
 #config.createConfig()
 #inConfig = config.readConfig()
 #iniConfig = config.createNewConfig()
 #restCall().getUserPorfolio()
-binanceAPI()
+binanceAPI().getUserPortfolio()
