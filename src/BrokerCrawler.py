@@ -1,15 +1,16 @@
 import hashlib
 from abc import ABC, abstractmethod
-import configparser
-import os
+from coinmarketcap import Market
 
 import binance as binance
 import requests
 import time
 import hmac
 from binance.client import Client
-#from src.CoinMarketCrawler import portfolio
-#from src.Coin import coin
+from src.Config import Config
+from src.Coin import coin
+from src.Portfolio import portfolio
+
 #abstract broker
 class Broker(ABC):
 
@@ -24,59 +25,6 @@ class Broker(ABC):
     def getMyPortfolio(self):
         pass
 
-class Config():
-
-    def __init__(self):
-
-        super().__init__()
-
-    def createConfig(self, ):
-        config = configparser.ConfigParser()
-        with open('settings.ini','w') as config_file:
-            config.write(config_file)
-        return config
-
-    def readConfig(self):
-        settings = configparser.ConfigParser()
-        settings._interpolation = configparser.ExtendedInterpolation()
-        settings.read('settings.ini')
-        return settings
-
-    def getConfig(self):
-        config = configparser.ConfigParser()
-        readConfig = config.read('settings.ini')
-        return readConfig
-
-    def creatSection(self, section):
-        config = configparser.ConfigParser()
-        config.read("settings.ini")
-        if not config.has_section(section):
-            config.add_section(section)
-        with open('settings.ini', 'w') as configfile:
-            config.write(configfile)
-        return config
-
-    def addToSection(self, section, option, value):
-        config = configparser.ConfigParser()
-        config.read("settings.ini")
-        config.set(section,option,value)
-        with open('settings.ini', 'w') as configfile:
-            config.write(configfile)
-        return config
-    def createNewConfig(self):
-
-        print("Creating Config")
-        if not os.path.exists('settings.ini'):
-            config = self.createConfig()
-        print("adding Binance broker")
-        self.creatSection("Binance")
-        pubKey=input("Enter public Key: ")
-        privKey=input("Enter priv Key: ")
-        self.addToSection("Binance","pubKey",pubKey)
-        self.addToSection( "Binance", "prvKey", privKey)
-        print ("config Created")
-        print("PubKey is: "+ self.readConfig().get("Binance","pubKey"))
-        return config
 
 class restCall():
     def __init__(self):
@@ -113,19 +61,43 @@ class restCall():
         query_string = '&'.join(["{}={}".format(d[0], d[1]) for d in ordered_data])
         m = hmac.new(self.API_SECRET.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256)
         return m.hexdigest()
+
 class binanceAPI:
     def __init__(self):
 
         super().__init__()
-
+    def getClient(self):
+        config = Config()
+        client = Client(config.readConfig().get("Binance","pubKey"), config.readConfig().get("Binance","prvkey"))
+        return client
     def getUserPortfolio(self):
 
-        config=Config()
-        portfolio = list()
-        client = Client(config.readConfig().get("Binance","pubKey"), config.readConfig().get("Binance","prvkey"))
-        info = client.get_account()
 
-        print(info)
+        binancePortfolio = portfolio(0, 0, 0)
+        symbolList=list()
+        client=self.getClient()
+        info = client.get_account()
+        balance = info['balances']
+
+        for symbol in balance:
+            if float(symbol['free']) != 0.0:
+                nCoin = coin(0,symbol["asset"])
+                #binanceSymbolInfo=self.getSymbolPrice(symbol["asset"])
+
+                nCoin.amt=symbol['free']
+                nCoin.worth=float(nCoin.amt)*float(nCoin.price)
+                symbolList.append(nCoin)
+                binancePortfolio.coins.append(nCoin)
+                binancePortfolio.investmentSize+=nCoin.worth
+        for itCoin in binancePortfolio.coins:
+            itCoin.prozent=(100/binancePortfolio.investmentSize)*itCoin.worth
+
+        return binancePortfolio
+
+
+
+
+
 
 #config = Config()
 #config.createConfig()

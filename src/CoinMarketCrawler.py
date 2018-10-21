@@ -28,12 +28,7 @@ import copy
 #        self.maxSlize = maxSlize
 #        self.investmentSize = investmentSize
 
-def getMarket(nrOfPositions):
 
-    coinmarketcap = Market()
-    linstings = coinmarketcap.listings()
-    ticker = coinmarketcap.ticker(start=0, limit=nrOfPositions, convert='USD')
-    return ticker
 
 def getMarketWorth(ticker, symbol):
     marketCounter=0
@@ -67,7 +62,7 @@ def calcSlize(portfolio, symbol):
     if prozent > portfolio.maxSlize:
         prozent = portfolio.maxSlize
     #print(prozent)
-    nCoin = coin(prozent, symbol, price)
+    nCoin = coin(prozent, symbol)
     nCoin = calcCoinAmt(nCoin, portfolio.investmentSize)
     return nCoin
 
