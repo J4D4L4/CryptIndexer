@@ -43,6 +43,11 @@ class Interface:
             for nTrade in trades:
                 print(nTrade.text)
             self.printBarChart(newPortfolio.coins)
+            newOldPortfolio=portfolio(0,0,0)
+            for trde in trades:
+                newOldPortfolio=reBalance.removeEmptyCoins(reBalance.tradeOnPortfolio(currentPortfolio,trde))
+            self.printBarChartfor2(newPortfolio.coins,newPortfolio.coins)
+            print(newOldPortfolio)
 
         else :
             print("wrong input")
@@ -160,5 +165,20 @@ class Interface:
         fig.tight_layout()
         plt.show()
 
+    def printBarChartfor2(self,coinsOld, coinsNew):
+        n_groups = len(coinsOld)
+        fig, ax = plt.subplots()
+        index = np.arange(n_groups)
+        bar_width = 0.35
+
+
+        rects1 = ax.bar(index,CoinMarketCrawlerService.getListofProzent(coinsOld), bar_width, label='Symbol')
+        rects2 = ax.bar(index + bar_width, CoinMarketCrawlerService.getListofProzent(coinsNew), bar_width,label='Symbol')
+        ax.set_xticks(index + bar_width / 2)
+
+        ax.set_xticklabels(CoinMarketCrawlerService.getListofSymbols(coinsOld))
+        ax.legend((rects1[0], rects2[0]), ('RealPortfolio', 'Calculatetd Index'))
+        fig.tight_layout()
+        plt.show()
 
 Interface().consoleIntefaceMainMenu()
