@@ -17,3 +17,14 @@ class portfolio:
         linstings = coinmarketcap.listings()
         ticker = coinmarketcap.ticker(start=0, limit=nrOfPositions, convert='USD')
         return ticker
+    def reCalcPortfolio(self):
+        self.calcInvestmentSlize()
+        for cCoin in self.coins:
+            cCoin.prozent=(100/self.investmentSize)*cCoin.worth
+        return self
+
+    def calcInvestmentSlize(self):
+        self.investmentSize = 0
+        for cCoin in self.coins:
+            self.investmentSize+=cCoin.worth
+

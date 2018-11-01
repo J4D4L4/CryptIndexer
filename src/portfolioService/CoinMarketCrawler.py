@@ -1,11 +1,5 @@
-from coinmarketcap import Market
-import matplotlib.pyplot as plt
-import numpy as np
-from src.BrokerCrawler import Config
-from src.Coin import coin
-from src.Portfolio import portfolio
+from src.portfolioService.Coin import coin
 
-import json
 import copy
 
 class CoinMarketCrawlerService:

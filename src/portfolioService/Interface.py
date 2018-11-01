@@ -1,16 +1,11 @@
-from src.CoinMarketCrawler import CoinMarketCrawlerService
-from coinmarketcap import Market
+from src.portfolioService.CoinMarketCrawler import CoinMarketCrawlerService
 import matplotlib.pyplot as plt
 import numpy as np
-from src.BrokerCrawler import Config
-from src.BrokerCrawler import binanceAPI
-from src.Coin import coin
-from src.Portfolio import portfolio
-from src.ReBalancer import Rebalancer
+from src.portfolioService.BrokerCrawler import Config
+from src.portfolioService.BrokerCrawler import binanceAPI
+from src.portfolioService.Portfolio import portfolio
+from src.portfolioService.ReBalancer import Rebalancer
 
-
-import json
-import copy
 
 class Interface:
     def consoleIntefaceMainMenu(self):
@@ -46,7 +41,9 @@ class Interface:
             newOldPortfolio=portfolio(0,0,0)
             for trde in trades:
                 newOldPortfolio=reBalance.removeEmptyCoins(reBalance.tradeOnPortfolio(currentPortfolio,trde))
-            self.printBarChartfor2(newPortfolio.coins,newPortfolio.coins)
+            newOldPortfolio=newOldPortfolio.reCalcPortfolio()
+            self.printBarChartfor2(newOldPortfolio.coins,newPortfolio.coins)
+            self.printBarChartfor3(currentPortfolio.coins,newPortfolio.coins, newPortfolio.coins)
             print(newOldPortfolio)
 
         else :
@@ -178,6 +175,23 @@ class Interface:
 
         ax.set_xticklabels(CoinMarketCrawlerService.getListofSymbols(coinsOld))
         ax.legend((rects1[0], rects2[0]), ('RealPortfolio', 'Calculatetd Index'))
+        fig.tight_layout()
+        plt.show()
+
+    def printBarChartfor3(self,coinsOld, coinsNew, coinsOldwithTrades):
+        n_groups = len(coinsOld)
+        fig, ax = plt.subplots()
+        index = np.arange(n_groups)
+        bar_width = 0.35
+
+
+        rects1 = ax.bar(index,CoinMarketCrawlerService.getListofProzent(coinsOld), bar_width, label='Symbol')
+        rects2 = ax.bar(index + bar_width, CoinMarketCrawlerService.getListofProzent(coinsNew), bar_width,label='Symbol')
+        rects3 = ax.bar(index + bar_width, CoinMarketCrawlerService.getListofProzent(coinsOldwithTrades), bar_width,label='Symbol')
+        ax.set_xticks(index + bar_width / 3)
+
+        ax.set_xticklabels(CoinMarketCrawlerService.getListofSymbols(coinsOld))
+        ax.legend((rects1[0], rects2[0]), rects3[0], ('Old Portfolio', 'New Portfolio','Calculatetd Index'))
         fig.tight_layout()
         plt.show()
 

@@ -1,5 +1,5 @@
-from src.Trade import trade
-from src.Coin import coin
+from src.portfolioService.Trade import trade
+from src.portfolioService.Coin import coin
 class Rebalancer:
     def __init__(self):
 
@@ -15,23 +15,30 @@ class Rebalancer:
         copyNewPortfolio = portfolioNew.coins.copy()
         while (count<len(portfolioOld.coins)):
         #for coin in portfolioOld.coins:
-            coinOld=0
-            coin = portfolioOld.coins[count]
+
+            coinOld = portfolioOld.coins[count]
             testPortfolioCoins=portfolioOld.coins.copy()
 
             count2=0
-            if self.checkIfSymbolInPortfolio(coin.symbol,portfolioNew):
+            if self.checkIfSymbolInPortfolio(coinOld.symbol,portfolioNew):
+                indexOfCoinInNew=self.getIndexOfSymbol(coinOld.symbol,portfolioNew)
+                coinNew=portfolioNew.coins[indexOfCoinInNew]
+                if abs(coinOld.prozent-coinNew.prozent)>=float(minDiffrence):
+                    trades.append(self.calcReBalanceTrade(coinOld,coinNew))
+                copyNewPortfolio.remove(coinNew)
+                '''
                 for coinNew in portfolioNew.coins:
 
-                    if coin.symbol==coinNew.symbol:
+                    if coinOld.symbol==coinNew.symbol:
                         coinOld=1
-                        if abs(coinNew.prozent-coin.prozent)>=float(minDiffrence):
-                            trades.append(self.calcReBalanceTrade(coin,coinNew))
-                        copyNewPortfolio.remove(coinNew)
+                        if abs(coinNew.prozent-coinOld.prozent)>=float(minDiffrence):
+                            trades.append(self.calcReBalanceTrade(coinOld,coinNew))
 
+                        copyNewPortfolio.remove(coinNew)
+                '''
             else:
-                textTade = "Sell: Sell " + str(coin.amt) + " " + coin.symbol + ". This is " + str(abs(coin.worth)) + "$ worth of the Coin."
-                trades.append(trade('Sell',textTade, coin.amt,coin.worth,coin.symbol))
+                textTade = "Sell: Sell " + str(coinOld.amt) + " " + coinOld.symbol + ". This is " + str(abs(coinOld.worth)) + "$ worth of the Coin."
+                trades.append(trade('Sell',textTade, coinOld.amt,coinOld.worth,coinOld.symbol))
 
             count+=1
         if len(copyNewPortfolio) != 0:
@@ -44,12 +51,12 @@ class Rebalancer:
     def calcReBalanceTrade(self,coinOld,coinNew):
         diffrence = coinOld.worth - coinNew.worth
         diffrenceCoins=diffrence/coinNew.price
-        if diffrenceCoins>0:
+        if diffrence>0:
 
-            textTade="Sell: Sell "+str(diffrenceCoins)+" "+coinNew.symbol+ ". This is "+ str(diffrence)+"$ worth of the Coin."
+            textTade="Sell: Sell "+str(abs(diffrenceCoins))+" "+coinNew.symbol+ ". This is "+ str(abs(diffrence))+"$ worth of the Coin."
 
-            nTrade = trade("Sell",textTade,diffrenceCoins,diffrence,coinNew.symbol )
-        elif diffrenceCoins<0:
+            nTrade = trade("Sell",textTade,diffrenceCoins,abs(diffrence),coinNew.symbol )
+        elif diffrence<0:
             textTade = "Buy: Buy " + str(diffrenceCoins) + " " + coinNew.symbol + ". This is " + str(diffrence) + "$ worth of the Coin."
             nTrade = trade("Buy", textTade, abs(diffrenceCoins), abs(diffrence),coinNew.symbol)
         return nTrade
@@ -82,6 +89,8 @@ class Rebalancer:
                     tCoin.amt=str(cAmt)
                     foundCoin=1
                     break
+
+        #### todo check if needed can probally be deleted
         if foundCoin==0:
             nCoin=coin(0,trade.symbol)
             nCoin.amt=str(trade.amt)
@@ -96,3 +105,9 @@ class Rebalancer:
             if inCoin.symbol == symbol:
                 inPortfolio= bool(1)
         return inPortfolio
+    def getIndexOfSymbol(self,symbol,portfolio):
+
+        for  checkCoin in (portfolio.coins):
+            if checkCoin.symbol==symbol:
+                index = portfolio.coins.index(checkCoin)
+        return index
