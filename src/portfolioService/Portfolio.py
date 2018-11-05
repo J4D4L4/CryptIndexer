@@ -28,3 +28,14 @@ class portfolio:
         for cCoin in self.coins:
             self.investmentSize+=cCoin.worth
 
+    def getCoin(self, symbol):
+        for iCoin in self.coins:
+            if iCoin.symbol == symbol:
+                return iCoin
+
+    def reSortCoins(self,inPortfolio):
+        newCoinList=list()
+        for iCoin in inPortfolio.coins:
+            newCoinList.append(self.getCoin(iCoin.symbol))
+        return newCoinList
+

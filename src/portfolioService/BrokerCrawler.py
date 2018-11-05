@@ -102,4 +102,4 @@ class binanceAPI:
 #inConfig = config.readConfig()
 #iniConfig = config.createNewConfig()
 #restCall().getUserPorfolio()
-binanceAPI().getUserPortfolio()
+#binanceAPI().getUserPortfolio()

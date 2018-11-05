@@ -42,8 +42,9 @@ class Interface:
             for trde in trades:
                 newOldPortfolio=reBalance.removeEmptyCoins(reBalance.tradeOnPortfolio(currentPortfolio,trde))
             newOldPortfolio=newOldPortfolio.reCalcPortfolio()
+            newOldPortfolio.coins=newOldPortfolio.reSortCoins(newPortfolio)
             self.printBarChartfor2(newOldPortfolio.coins,newPortfolio.coins)
-            self.printBarChartfor3(currentPortfolio.coins,newPortfolio.coins, newPortfolio.coins)
+            #self.printBarChartfor3(currentPortfolio.coins,newPortfolio.coins, newPortfolio.coins)
             print(newOldPortfolio)
 
         else :
